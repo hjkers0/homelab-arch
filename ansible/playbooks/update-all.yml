@@ -1,0 +1,22 @@
+---
+- name: Update all local machines
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update apt 
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+
+    - name: Remove unused packages
+      apt:
+        autoremove: yes
+
+    - name: Reboot if required
+      reboot:
+        msg: "Reboot required after upgrade"
+      when: ansible_facts.get('ansible_reboot_required', False)

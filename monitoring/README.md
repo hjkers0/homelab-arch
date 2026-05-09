@@ -8,5 +8,5 @@ The node exporter is running via **systemd** and exposing the LXC data on the po
 This tool is used on the VM that displays the information of the docker containers. This information is exposed on the port 8080
 
 
-[cAdvisor](../images/cAdvisor.png)
-[node_exporter](../images/node_exporter.png)
+![cAdvisor](../images/cAdvisor.png)
+![node_exporter](../images/node_exporter.png)

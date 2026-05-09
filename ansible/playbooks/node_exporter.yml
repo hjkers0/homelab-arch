@@ -1,0 +1,63 @@
+---
+- name: Install node exporter for prometheus monitoring
+  hosts: all
+  become: true
+
+  vars:
+    node_exporter_version: "1.9.1"
+
+  tasks:
+    - name: Create node_exporter user
+      user:
+        name: node_exporter
+        shell: /bin/false
+        create_home: no
+
+    - name: Download node exporter depending on machine arch
+      get_url:
+        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-{{ 'armv7' if ansible_architecture == 'armv7l' else 'amd64' }}.tar.gz"
+        dest: /tmp/node_exporter.tar.gz
+
+    - name: Extract node exporter
+      unarchive:
+        src: /tmp/node_exporter.tar.gz
+        dest: /tmp/
+        remote_src: yes
+
+    - name: Copy binary
+      copy:
+        src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-{{ 'armv7' if ansible_architecture == 'armv7l' else 'amd64' }}/node_exporter"
+        dest: /usr/local/bin/node_exporter
+        remote_src: yes
+        mode: '0755'
+
+    - name: Create systemd service
+      copy:
+        dest: /etc/systemd/system/node_exporter.service
+        content: |
+          [Unit]
+          Description=Node Exporter
+          After=network.target
+
+          [Service]
+          User=node_exporter
+          ExecStart=/usr/local/bin/node_exporter
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Enable and start node_exporter
+      systemd:
+        name: node_exporter
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+    - name: Print node_exporter status
+      command: systemctl status node_exporter
+      register: status
+
+    - name: Show status
+      debug:
+        msg: "{{ status.stdout }}"

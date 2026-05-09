@@ -1,0 +1,21 @@
+all:
+  children:
+    lxc:
+      hosts:
+        adguard:
+          ansible_host: ADGUARD_IP
+          ansible_user: USER
+        caddy:
+          ansible_host: CADDY_IP
+          ansible_user: USER
+        vw:
+          ansible_host: VAULTWARDEN_IP
+          ansible_user: USER
+        monitoring:
+          ansible_host: MONITORING_IP
+          ansible_user: USER
+    raspberry:
+      hosts:
+        rpi:
+          ansible_host: RPI_IP
+          ansible_user: USER
