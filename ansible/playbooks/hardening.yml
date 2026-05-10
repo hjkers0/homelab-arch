@@ -1,0 +1,61 @@
+---
+- name: Harden all machines
+  hosts: all
+  become: true
+
+  vars:
+    admin_user: hjkers
+
+  tasks:
+    - name: Create admin user
+      user:
+        name: "{{ admin_user }}"
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+
+    - name: Add SSH key to admin user
+      authorized_key:
+        user: "{{ admin_user }}"
+        key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+    - name: Disable root SSH login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+
+    - name: Disable password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        state: present
+
+    - name: Restart SSH
+      service:
+        name: sshd
+        state: restarted
+
+#           - name: Install ufw   NOTE: not set now because I think that is not the final version and maybe I will change some things before using firewalls
+#             apt:
+#               name: ufw
+#               state: present
+#        
+#           - name: Allow SSH
+#             ufw:
+#               rule: allow
+#               port: '22'
+#               proto: tcp
+#        
+#           - name: Allow node-exporter
+#             ufw:
+#               rule: allow
+#               port: '9100'
+#               proto: tcp
+#        
+#           - name: Enable ufw
+#             ufw:
+#               state: enabled
+#        policy: deny

@@ -4,6 +4,7 @@ Playbooks to manage and automate my homelab infrastructure.
 
 - `update-all.yml` — updates and upgrades all machines
 - `node-exporter.yml` — installs and configures node-exporter for prometheus monitoring
+- `hardening.yml` — hardens the machines
 
 ## Inventory structure
 

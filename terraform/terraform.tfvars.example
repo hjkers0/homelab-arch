@@ -1,0 +1,11 @@
+proxmox_endpoint  = PROXMOX_IP 
+proxmox_api_token = PROXMOX_API_TOKEN 
+proxmox_password = PROXMOX_PSSWD 
+
+lxc_vmid     = vm_id
+lxc_hostname = vm_name 
+lxc_ip       = vm_ip
+lxc_gateway  = vm_gateway
+lxc_cores    = vm_core
+lxc_memory   = vm_memory
+lxc_disk     = vm_disk_size
